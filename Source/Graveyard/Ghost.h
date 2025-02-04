@@ -27,8 +27,9 @@ private:
 	UPROPERTY(EditAnywhere, Category="player")
 	ACharacter* Player; 
 
-	UPROPERTY(EditAnywhere, Category="StaticMesh")
+	UPROPERTY(EditAnywhere, Category="Spawner")
 	UStaticMeshComponent* Body;
-
+	UPROPERTY(EditAnywhere, Category="Spawner")
+	UStaticMeshComponent* Eyes;
 
 };

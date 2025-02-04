@@ -3,13 +3,18 @@
 
 #include "Ghost.h"
 
+#include "Components/StaticMeshComponent.h"
 // Sets default values
 AGhost::AGhost()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	Body = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body"));
+	
+	// Création et attachement du maillage statique
+	Body = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
 	RootComponent = Body;
+
+	Eyes = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
 
 }
 

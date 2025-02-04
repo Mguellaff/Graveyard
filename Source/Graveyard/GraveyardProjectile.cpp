@@ -26,6 +26,8 @@ AGraveyardProjectile::AGraveyardProjectile()
 	ProjectileMovement->MaxSpeed = 3000.f;
 	ProjectileMovement->bRotationFollowsVelocity = true;
 	ProjectileMovement->bShouldBounce = true;
+	ProjectileMovement->ProjectileGravityScale = 0.0f; 
+
 
 	InitialLifeSpan = 1.0f;
 }

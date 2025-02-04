@@ -31,4 +31,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Spawning")
 	TSubclassOf<AGhost> EnemyClass; // Classe de l'ennemi à spawn
 
+	/** Composant de maillage statique */
+	UPROPERTY(EditAnywhere, Category="Spawner")
+	UStaticMeshComponent* MeshComponent;
+
 };

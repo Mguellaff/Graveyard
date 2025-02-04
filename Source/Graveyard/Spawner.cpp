@@ -2,13 +2,16 @@
 
 
 #include "Spawner.h"
+#include "Components/StaticMeshComponent.h"
 
 // Sets default values
 ASpawner::ASpawner()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// Création et attachement du maillage statique
+	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
+	RootComponent = MeshComponent;
 }
 
 // Called when the game starts or when spawned
@@ -39,18 +42,19 @@ void ASpawner::SpawnEnemy()
 
 void ASpawner::SpawnEnemy_Internal()
 {
-	if (EnemyClass) // Vérifie si la classe est assignée
+	if (EnemyClass) 
 	{
-		FVector SpawnLocation = GetActorLocation(); 
+		FVector SpawnLocation = GetActorLocation()+ FVector(100, 100, 100); 
 		FRotator SpawnRotation = GetActorRotation();
 
-		// Spawner l'ennemi
 		AGhost* SpawnedEnemy = GetWorld()->SpawnActor<AGhost>(EnemyClass, SpawnLocation, SpawnRotation);
 
 		if (SpawnedEnemy)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Enemy Spawned Successfully!"));
 		}
+else
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Enemy did not Spawn!"));
 	}
 	else
 	{
