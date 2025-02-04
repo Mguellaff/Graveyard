@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "MyGameInstance.h"
 #include "Animation/AnimInstance.h"
 #include "Engine/LocalPlayer.h"
 #include "Engine/World.h"
@@ -20,6 +21,22 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
 }
 
+void UTP_WeaponComponent::SetNumberOfBullet(int32 newNumber)
+{
+	NumberOfBullet=newNumber;
+}
+
+int32 UTP_WeaponComponent::GetNumberOfBullet() const
+{
+	return NumberOfBullet;
+}
+void UTP_WeaponComponent::MinusOneBullet()
+{
+	if(NumberOfBullet>0)
+	NumberOfBullet-=1;
+	else
+		Reload();
+}
 
 void UTP_WeaponComponent::Fire()
 {
@@ -27,13 +44,13 @@ void UTP_WeaponComponent::Fire()
 	{
 		return;
 	}
-
-	// Try and fire a projectile
-	if (ProjectileClass != nullptr)
+    
+	if (ProjectileClass != nullptr && canShoot) 
 	{
 		UWorld* const World = GetWorld();
 		if (World != nullptr)
 		{
+			MinusOneBullet();
 			APlayerController* PlayerController = Cast<APlayerController>(Character->GetController());
 			const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
 			// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
@@ -49,13 +66,13 @@ void UTP_WeaponComponent::Fire()
 	}
 	
 	// Try and play the sound if specified
-	if (FireSound != nullptr)
+	if (FireSound != nullptr && canShoot)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, FireSound, Character->GetActorLocation());
 	}
 	
 	// Try and play a firing animation if specified
-	if (FireAnimation != nullptr)
+	if (FireAnimation != nullptr&&canShoot)
 	{
 		// Get the animation object for the arms mesh
 		UAnimInstance* AnimInstance = Character->GetMesh1P()->GetAnimInstance();
@@ -64,6 +81,21 @@ void UTP_WeaponComponent::Fire()
 			AnimInstance->Montage_Play(FireAnimation, 1.f);
 		}
 	}
+}
+void UTP_WeaponComponent::Reload()
+{
+	canShoot=false;
+	UE_LOG(LogTemp, Warning, TEXT("Rechargement en cours..."));
+
+	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &UTP_WeaponComponent::FinishReload, 1.0f, false);
+}
+
+void UTP_WeaponComponent::FinishReload()
+{
+	SetNumberOfBullet(5); 
+	UE_LOG(LogTemp, Warning, TEXT("Rechargement terminé. Balles : %d"), GetNumberOfBullet());
+	canShoot=true;
+	
 }
 
 bool UTP_WeaponComponent::AttachWeapon(AGraveyardCharacter* TargetCharacter)

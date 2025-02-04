@@ -7,6 +7,7 @@
 #include "TP_WeaponComponent.generated.h"
 
 class AGraveyardCharacter;
+class UMyGameInstance;
 
 UCLASS(Blueprintable, BlueprintType, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class GRAVEYARD_API UTP_WeaponComponent : public USkeletalMeshComponent
@@ -49,6 +50,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	void Fire();
 
+	int32 GetNumberOfBullet() const;
+
+	void SetNumberOfBullet(int32 newNumberOfBullet);
+	void MinusOneBullet();
 protected:
 	/** Ends gameplay for this component. */
 	UFUNCTION()
@@ -57,4 +62,15 @@ protected:
 private:
 	/** The Character holding this weapon*/
 	AGraveyardCharacter* Character;
+	void Reload();
+	void FinishReload();
+
+	FTimerHandle ReloadTimerHandle;
+
+	int32 NumberOfBullet;
+	UPROPERTY(EditAnywhere, Category = "Ammo")
+	int32 MaxBullet = 6;
+	
+
+	bool canShoot=true;
 };
