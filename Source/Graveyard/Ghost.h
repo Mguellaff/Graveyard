@@ -29,7 +29,5 @@ private:
 
 	UPROPERTY(EditAnywhere, Category="Spawner")
 	UStaticMeshComponent* Body;
-	UPROPERTY(EditAnywhere, Category="Spawner")
-	UStaticMeshComponent* Eyes;
 
 };

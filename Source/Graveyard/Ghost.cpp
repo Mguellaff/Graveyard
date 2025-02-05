@@ -14,7 +14,6 @@ AGhost::AGhost()
 	Body = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
 	RootComponent = Body;
 
-	Eyes = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
 
 }
 

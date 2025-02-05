@@ -50,9 +50,16 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	void Fire();
 
-	int32 GetNumberOfBullet() const;
+	UFUNCTION(BlueprintCallable, Category="Ammo")
+	int32 GetNumberOfBullet() const { return NumberOfBullet; }
 
-	void SetNumberOfBullet(int32 newNumberOfBullet);
+	UFUNCTION(BlueprintCallable, Category="Ammo")
+	void SetNumberOfBullet(int32 NewNumberOfBullet) { NumberOfBullet = NewNumberOfBullet; }
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ammo", meta=(BlueprintProtected="true"))
+	int32 NumberOfBullet;
+
 	void MinusOneBullet();
 protected:
 	/** Ends gameplay for this component. */
@@ -67,7 +74,7 @@ private:
 
 	FTimerHandle ReloadTimerHandle;
 
-	int32 NumberOfBullet;
+
 	UPROPERTY(EditAnywhere, Category = "Ammo")
 	int32 MaxBullet = 6;
 	
