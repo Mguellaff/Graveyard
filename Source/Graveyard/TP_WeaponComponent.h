@@ -70,9 +70,21 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ammo", meta=(BlueprintProtected="true"))
 	int32 NumberOfBullet;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo", meta=(BlueprintProtected="true"))
 	int32 MaxBullet;
+	
 	void MinusOneBullet();
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Reload")
+	FString ReloadText;
+	
+	UFUNCTION(BlueprintCallable, Category="Ammo")
+	FString GetReloadText() const { return ReloadText; }
+
+	UFUNCTION(BlueprintCallable, Category="Ammo")
+	void SetReloadText(FString newReloadText){ReloadText=newReloadText;}
+	
 protected:
 	/** Ends gameplay for this component. */
 	UFUNCTION()
@@ -83,7 +95,8 @@ private:
 	AGraveyardCharacter* Character;
 	void Reload();
 	void FinishReload();
-
+	
+	
 	FTimerHandle ReloadTimerHandle;
 	
 

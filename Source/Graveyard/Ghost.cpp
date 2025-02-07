@@ -2,7 +2,8 @@
 
 
 #include "Ghost.h"
-
+#include "GameFramework/Actor.h"
+#include "Engine/World.h"
 #include "Components/StaticMeshComponent.h"
 // Sets default values
 AGhost::AGhost()
@@ -37,4 +38,5 @@ void AGhost::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
+
 

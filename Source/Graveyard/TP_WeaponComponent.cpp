@@ -77,7 +77,9 @@ void UTP_WeaponComponent::Reload()
 	{
 	canShoot=false;
 		UE_LOG(LogTemp, Warning, TEXT("Rechargement en cours..."));
-     
+		SetReloadText("Rechargement...");
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("%s"), *GetReloadText()));
+
      	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &UTP_WeaponComponent::FinishReload, 1.0f, false);
 	}
 	
@@ -93,6 +95,8 @@ void UTP_WeaponComponent::FinishReload()
 	}
 	UE_LOG(LogTemp, Warning, TEXT("Rechargement terminé. Balles : %d"), GetNumberOfBullet());
 	canShoot=true;
+		SetReloadText("");
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("%srien"), *GetReloadText()));
 	
 }
 
