@@ -38,6 +38,9 @@ public:
 	/** Fire Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputAction* FireAction;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon Sounds")
+	USoundBase* ReloadSound;
 
 	/** Sets default values for this component's properties */
 	UTP_WeaponComponent();
@@ -54,12 +57,21 @@ public:
 	int32 GetNumberOfBullet() const { return NumberOfBullet; }
 
 	UFUNCTION(BlueprintCallable, Category="Ammo")
-	void SetNumberOfBullet(int32 NewNumberOfBullet) { NumberOfBullet = NewNumberOfBullet; }
+	void SetNumberOfBullet(int32 NewNumberOfBullet)
+	{
+		NumberOfBullet = NewNumberOfBullet;
+		MaxBullet-=NewNumberOfBullet;
+		if(MaxBullet<0)
+			MaxBullet=0;
+	}
 
+	UFUNCTION(BlueprintCallable, Category="Ammo")
+	int32 GetMaxBullet() const { return MaxBullet; }
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ammo", meta=(BlueprintProtected="true"))
 	int32 NumberOfBullet;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo", meta=(BlueprintProtected="true"))
+	int32 MaxBullet;
 	void MinusOneBullet();
 protected:
 	/** Ends gameplay for this component. */
@@ -73,10 +85,8 @@ private:
 	void FinishReload();
 
 	FTimerHandle ReloadTimerHandle;
+	
 
-
-	UPROPERTY(EditAnywhere, Category = "Ammo")
-	int32 MaxBullet = 6;
 	
 
 	bool canShoot=true;

@@ -7,6 +7,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundBase.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "MyGameInstance.h"
@@ -18,14 +19,20 @@
 UTP_WeaponComponent::UTP_WeaponComponent()
 {
 	// Default offset from the character location for projectiles to spawn
-	MuzzleOffset = FVector(100.0f, 500.0f, 10.0f);
+	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
+	MaxBullet=66;
+	NumberOfBullet=6;
 }
 void UTP_WeaponComponent::MinusOneBullet()
 {
 	if(NumberOfBullet>0)
-	NumberOfBullet-=1;
-	else
+	{
+		NumberOfBullet-=1;
+	}
+	if(NumberOfBullet==0)
+	{
 		Reload();
+	}
 }
 
 void UTP_WeaponComponent::Fire()
@@ -38,9 +45,10 @@ void UTP_WeaponComponent::Fire()
 	if (ProjectileClass != nullptr && canShoot) 
 	{
 		UWorld* const World = GetWorld();
-		if (World != nullptr)
+		if (FireAnimation != nullptr&&FireSound != nullptr &&World != nullptr && GetNumberOfBullet()>0)
 		{
 			MinusOneBullet();
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Number of Bullet: %d"), NumberOfBullet));
 			APlayerController* PlayerController = Cast<APlayerController>(Character->GetController());
 			const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
 			// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
@@ -52,37 +60,37 @@ void UTP_WeaponComponent::Fire()
 	
 			// Spawn the projectile at the muzzle
 			World->SpawnActor<AGraveyardProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			
+			UGameplayStatics::PlaySoundAtLocation(this, FireSound, Character->GetActorLocation());
+			UAnimInstance* AnimInstance = Character->GetMesh1P()->GetAnimInstance();
+			if (AnimInstance != nullptr)
+			{
+				AnimInstance->Montage_Play(FireAnimation, 1.f);
+			}
 		}
 	}
 	
-	// Try and play the sound if specified
-	if (FireSound != nullptr && canShoot)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, Character->GetActorLocation());
-	}
-	
-	// Try and play a firing animation if specified
-	if (FireAnimation != nullptr&&canShoot)
-	{
-		// Get the animation object for the arms mesh
-		UAnimInstance* AnimInstance = Character->GetMesh1P()->GetAnimInstance();
-		if (AnimInstance != nullptr)
-		{
-			AnimInstance->Montage_Play(FireAnimation, 1.f);
-		}
-	}
 }
 void UTP_WeaponComponent::Reload()
 {
+	if(GetMaxBullet()>0)
+	{
 	canShoot=false;
-	UE_LOG(LogTemp, Warning, TEXT("Rechargement en cours..."));
-
-	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &UTP_WeaponComponent::FinishReload, 1.0f, false);
+		UE_LOG(LogTemp, Warning, TEXT("Rechargement en cours..."));
+     
+     	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &UTP_WeaponComponent::FinishReload, 1.0f, false);
+	}
+	
 }
 
 void UTP_WeaponComponent::FinishReload()
 {
-	SetNumberOfBullet(5); 
+	SetNumberOfBullet(6);
+	if (ReloadSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, ReloadSound, GetOwner()->GetActorLocation());
+        UGameplayStatics::PlaySound2D(this, ReloadSound);
+	}
 	UE_LOG(LogTemp, Warning, TEXT("Rechargement terminé. Balles : %d"), GetNumberOfBullet());
 	canShoot=true;
 	
