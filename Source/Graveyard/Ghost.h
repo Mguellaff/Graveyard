@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+
 #include "Ghost.generated.h"
 
 UCLASS()
@@ -28,6 +29,15 @@ private:
 
 	UPROPERTY(EditAnywhere, Category="Spawner")
 	UStaticMeshComponent* Body;
+	
+	UPROPERTY(EditAnywhere, Category="Movement")
+	float MoveSpeed = 600.0f;  
+
+
+	UPROPERTY()
+	ANavigationData* NavData;   
+
+	FNavPathSharedPtr CurrentPath;
 
 
 };

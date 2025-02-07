@@ -22,7 +22,6 @@ AGhost::AGhost()
 void AGhost::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame

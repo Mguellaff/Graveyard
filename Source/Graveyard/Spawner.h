@@ -29,7 +29,7 @@ private:
 	void SpawnEnemy_Internal();
 
 	UPROPERTY(EditAnywhere, Category = "Spawning")
-	TSubclassOf<AGhost> EnemyClass; // Classe de l'ennemi à spawn
+	TSubclassOf<AGhost> EnemyClass;
 
 	UPROPERTY(EditAnywhere, Category="Spawner")
 	UStaticMeshComponent* MeshComponent;
