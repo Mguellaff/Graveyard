@@ -44,7 +44,9 @@ void ASpawner::SpawnEnemy_Internal()
 {
 	if (EnemyClass) 
 	{
-		FVector SpawnLocation = GetActorLocation()+ FVector(0, -100, 0); 
+		FVector LocalOffset(0, 5, 0);
+		FVector SpawnLocation = GetActorTransform().TransformPosition(LocalOffset);
+
 		FRotator SpawnRotation = GetActorRotation();
 
 		AGhost* SpawnedEnemy = GetWorld()->SpawnActor<AGhost>(EnemyClass, SpawnLocation, SpawnRotation);

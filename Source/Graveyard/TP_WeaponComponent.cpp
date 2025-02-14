@@ -20,7 +20,7 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 {
 	// Default offset from the character location for projectiles to spawn
 	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
-	MaxBullet=66;
+	MaxBullet=1;
 	NumberOfBullet=6;
 }
 void UTP_WeaponComponent::MinusOneBullet()

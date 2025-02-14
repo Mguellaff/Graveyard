@@ -24,7 +24,7 @@ protected:
 private:
 	FTimerHandle SpawnTimerHandle;
 
-	float delay = 2.0f;
+	float delay = 5.0f;
 	void SpawnEnemy();
 	void SpawnEnemy_Internal();
 

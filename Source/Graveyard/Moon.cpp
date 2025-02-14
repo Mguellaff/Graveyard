@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Moon.h"
+#include "MyGameInstance.h"
 
 // Sets default values
 AMoon::AMoon()
@@ -13,12 +13,12 @@ AMoon::AMoon()
 	RootComponent = Body;
 }
 
-// Called when the game starts or when spawned
 void AMoon::BeginPlay()
 {
 	Super::BeginPlay();
-	
+    
 }
+
 
 // Called every frame
 void AMoon::Tick(float DeltaTime)

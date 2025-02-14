@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "TP_PickUpComponent.h"
-
+#include "MyGameInstance.h"
 UTP_PickUpComponent::UTP_PickUpComponent()
 {
 	// Setup the Sphere Collision
@@ -27,5 +27,17 @@ void UTP_PickUpComponent::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedCo
 
 		// Unregister from the Overlap Event so it is no longer triggered
 		OnComponentBeginOverlap.RemoveAll(this);
+	}
+	
+	UMyGameInstance* GameInstance = Cast<UMyGameInstance>(GetWorld()->GetGameInstance());
+
+	if (GameInstance)
+	{
+		GameInstance->StartGameTimer();
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Timer démarré depuis AMoon !"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("GameInstance est null dans AMoon::BeginPlay"));
 	}
 }

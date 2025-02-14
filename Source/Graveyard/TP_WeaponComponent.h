@@ -60,9 +60,6 @@ public:
 	void SetNumberOfBullet(int32 NewNumberOfBullet)
 	{
 		NumberOfBullet = NewNumberOfBullet;
-		MaxBullet-=NewNumberOfBullet;
-		if(MaxBullet<0)
-			MaxBullet=0;
 	}
 
 	UFUNCTION(BlueprintCallable, Category="Ammo")

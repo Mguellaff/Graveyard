@@ -2,6 +2,7 @@
 
 #include "GraveyardProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Ghost.h"
 #include "Components/SphereComponent.h"
 
 AGraveyardProjectile::AGraveyardProjectile() 
@@ -34,11 +35,32 @@ AGraveyardProjectile::AGraveyardProjectile()
 
 void AGraveyardProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	// Only add impulse and destroy projectile if we hit a physics
-	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
+	if (OtherActor && (OtherActor != this))  // Vérifie que l'autre acteur n'est pas ce projectile
 	{
-		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
-
-		Destroy();
+		// Vérifie si l'acteur touché possède le tag "Ghost"
+		if (OtherActor->ActorHasTag("Ghost"))
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Purple, TEXT("has ghost"));
+		
+			// Appelle la méthode TakeHit() sur le Ghost pour gérer la réduction de vie et la destruction
+			AGhost* Ghost = Cast<AGhost>(OtherActor);
+			if (Ghost)
+			{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Purple, TEXT("is ghost"));
+				Ghost->TakeHit();  // Appelle TakeHit pour réduire la vie et ajouter au score
+				UE_LOG(LogTemp, Warning, TEXT("Projectile a touché un Ghost !"));
+				Destroy();  // Détruit le projectile
+			}
+		}
+		// Vérifie si le composant touche un objet physique
+		else if (OtherComp && OtherComp->IsSimulatingPhysics())
+		{
+			// Applique une impulsion à l'objet physique
+			OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
+			Destroy();  // Détruit le projectile
+		}
 	}
 }
+
+
+
