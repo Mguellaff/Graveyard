@@ -17,21 +17,32 @@ public:
 	ASpawner();
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void OnSpawn();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
+	TSubclassOf<AGhost> EnemyClass;
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+
 	
 private:
+	AGhost* SpawnedEnemy = nullptr; 
+
 	FTimerHandle SpawnTimerHandle;
 
 	float delay = 5.0f;
 	void SpawnEnemy();
 	void SpawnEnemy_Internal();
 
-	UPROPERTY(EditAnywhere, Category = "Spawning")
-	TSubclassOf<AGhost> EnemyClass;
-
+	
 	UPROPERTY(EditAnywhere, Category="Spawner")
 	UStaticMeshComponent* MeshComponent;
 
 };
+
+

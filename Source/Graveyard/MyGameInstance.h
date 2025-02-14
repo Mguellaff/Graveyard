@@ -22,9 +22,25 @@ public:
 	int32 GetScore() const;
     UFUNCTION(BlueprintPure, Category="Timer")
     float GetTimeRemaining() const;
+	void EndScreen();
+	void SetIsWin(bool win);
+	
+	UFUNCTION(BlueprintCallable, Category="Text")
+	FString SetWinText(FString title);
+	void OpenMenu();
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Score", meta=(AllowPrivateAccess="true"))
 	int32 score=15;
 	FTimerHandle EndGameTimerHandle;
-	void EndGame();
+	void EndGame(bool bWin);
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Score", meta=(AllowPrivateAccess="true"))
+	bool isWin;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Score", meta=(AllowPrivateAccess="true"))
+	bool ShowWinText=false;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Score", meta=(AllowPrivateAccess="true"))
+	FString winText;
+
+
 };

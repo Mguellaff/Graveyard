@@ -35,33 +35,52 @@ void ASpawner::Tick(float DeltaTime)
 
 void ASpawner::SpawnEnemy()
 {
-	// Planifie le spawn si ce n'est pas déjà fait
 	GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &ASpawner::SpawnEnemy_Internal, delay, false);
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Spawn called"));
 }
 
 void ASpawner::SpawnEnemy_Internal()
 {
-	if (EnemyClass) 
+	if (SpawnedEnemy)
 	{
-		FVector LocalOffset(0, 5, 0);
-		FVector SpawnLocation = GetActorTransform().TransformPosition(LocalOffset);
+		SpawnedEnemy->Destroy();
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Old enemy destroyed!"));
+	}
 
+	if (EnemyClass)
+	{
+		FVector LocalOffset(
+			FMath::RandRange(-250, 250),
+			FMath::RandRange(-250, 250),
+			FMath::RandRange(0, 500)
+		);
+
+		FVector SpawnLocation = GetActorLocation() + LocalOffset;
 		FRotator SpawnRotation = GetActorRotation();
 
-		AGhost* SpawnedEnemy = GetWorld()->SpawnActor<AGhost>(EnemyClass, SpawnLocation, SpawnRotation);
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		// Créer un nouvel ennemi et stocker son pointeur
+		SpawnedEnemy = GetWorld()->SpawnActor<AGhost>(EnemyClass, SpawnLocation, SpawnRotation, SpawnParams);
 
 		if (SpawnedEnemy)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Enemy Spawned Successfully!"));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Enemy Spawned Successfully at: %s"), *SpawnLocation.ToString()));
 		}
-else
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Enemy did not Spawn!"));
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Enemy did not spawn!"));
+		}
 	}
 	else
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("EnemyClass is NULL! Assign it in the Editor."));
 	}
 }
+
+
+void ASpawner::OnSpawn_Implementation() {}
+
 
 

@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Character.h"
+#include "NiagaraFunctionLibrary.h"
 
 #include "MyGameInstance.h"
 AGhost::AGhost()
@@ -32,23 +33,38 @@ AGhost::AGhost()
 
 }
 
-// Called when the game starts or when spawned
 void AGhost::BeginPlay()
 {
 	Super::BeginPlay();
+
+	MoveDirection = FVector(FMath::RandRange(-1.f, 1.f), FMath::RandRange(-1.f, 1.f), 0.f);
+	MoveDirection.Normalize();
+
+	if (Body)
+	{
+		Body->SetSimulatePhysics(true);
+		Body->SetPhysicsLinearVelocity(MoveDirection * Speed);
+	}
+}
+
+void AGhost::Destroyed()
+{
+	Super::Destroyed();
+
+	
 }
 
 void AGhost::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// Récupère le joueur
 	ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     
 	if (PlayerCharacter)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::Blue, TEXT("Le fantôme suit le joueur"));
 	}
+	
 }
 
 
@@ -85,8 +101,7 @@ void AGhost::TakeHit()
                 UE_LOG(LogTemp, Error, TEXT("GameInstance est null dans TakeHit"));
             }
 
-            // Détruit le fantôme après avoir ajouté le score
-            Destroy();
+            DestroyAndPlaySound();
         }
     }
 }
@@ -102,4 +117,17 @@ void AGhost::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 			Destroy();
 		}
 	}
+}
+
+void AGhost::DestroyAndPlaySound()
+{
+	if (DeathSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
+	}
+	if (DeathVFX)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DeathVFX, GetActorLocation());
+	}
+	Destroy();
 }
